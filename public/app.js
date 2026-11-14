@@ -115,7 +115,7 @@ function periodInfo(g) {
   if (g.state === "post") return { per: g.shortDetail || "Final", clk: "", live: false };
   const sd = g.shortDetail || "";
   if (/half/i.test(sd)) return { per: "Halftime", clk: "", live: true };
-  if (/^end/i.test(sd)) return { per: sd, clk: "", live: true };
+  if (/^end/i.test(sd)) return { per: sd.replace(/^end of\s*/i, "End ").replace(/\s*quarter/i, ""), clk: "", live: true };
   return { per: perName(g.period), clk: g.clock || "", live: true };
 }
 
@@ -282,6 +282,20 @@ async function getJSON(url) {
   return r.json();
 }
 
+// Down, distance, timeouts and possession: ESPN's core API, fetched straight from the browser
+// (it allows CORS but blocks Cloudflare's servers).
+const CORE = "https://sports.core.api.espn.com/v2/sports/football/leagues/college-football";
+async function fetchSituation(id) {
+  try {
+    const j = await getJSON(`${CORE}/events/${id}/competitions/${id}/situation`);
+    return {
+      down: j.down, dist: j.distance, yl: j.yardLine, redZone: !!j.isRedZone,
+      homeTO: j.homeTimeouts, awayTO: j.awayTimeouts,
+      possession: (String(j.team?.$ref || "").match(/teams\/(\d+)/) || [])[1] || null,
+    };
+  } catch { return null; }
+}
+
 async function loadBoard() {
   try { board = await getJSON("/api/board"); if (!$("#sheet").hidden) renderList(); }
   catch {}
@@ -292,8 +306,10 @@ async function pollGame(id) {
   if (st.inflight) return;
   st.inflight = true;
   try {
-    const g = await getJSON(`/api/game/${id}`);
+    const wasLive = !st.data || st.data.state === "in";
+    const [g, sit] = await Promise.all([getJSON(`/api/game/${id}`), wasLive ? fetchSituation(id) : null]);
     if (!selected.includes(id)) return;
+    if (sit && g.state === "in") g.sit = sit;
     process(id, g);
     st.err = 0; lastOk = Date.now(); lastErr = false;
     const soon = g.state === "pre" && new Date(g.date) - Date.now() < 15 * 60000;

@@ -3,9 +3,8 @@
 // Responses are trimmed to what the screen needs (an ESPN summary is ~400 KB,
 // a trimmed game is ~20 KB) and cached at the edge for a few seconds.
 
-const VERSION = "0.2.1";
+const VERSION = "0.2.2";
 const SITE = "https://site.api.espn.com/apis/site/v2/sports/football/college-football";
-const CORE = "https://sports.core.api.espn.com/v2/sports/football/leagues/college-football";
 
 const json = (data, status = 200, maxAge = 0) =>
   new Response(JSON.stringify(data), {
@@ -136,15 +135,9 @@ export default {
       const m = url.pathname.match(/^\/api\/game\/(\d+)$/);
       if (m) {
         const id = m[1];
-        return await cached(request, ctx, 4, async () => {
-          const [sum, sit] = await Promise.all([
-            upstream(`${SITE}/summary?event=${id}`),
-            upstream(`${CORE}/events/${id}/competitions/${id}/situation`).catch((e) => ({ error: String(e.message || e) })),
-          ]);
-          const out = trimGame(sum, sit && !sit.error ? sit : null);
-          if (sit && sit.error) out.sitError = sit.error;
-          return out;
-        });
+        // The live situation (down, distance, timeouts) comes from ESPN's core API, which refuses
+        // Cloudflare's servers (403); the page fetches that small file directly instead.
+        return await cached(request, ctx, 4, async () => trimGame(await upstream(`${SITE}/summary?event=${id}`), null));
       }
       return json({ error: "not found" }, 404);
     } catch (e) {
