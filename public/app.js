@@ -182,7 +182,7 @@ function teamHTML(g, t, s, isHome) {
   const style = has ? `style="--tc:${p.main};--ta:${p.accent};--ti:${p.ink}"` : "";
   return `<div class="team ${isHome ? "home" : "away"} ${has ? "ball" : ""} ${trail}" ${style}>
     <img class="logo" src="${esc(has ? t.logo || t.logoDark : t.logoDark || t.logo)}" alt="">
-    <div class="tid"><div class="abbr">${esc(t.abbr)}</div><div class="tos">${line2}</div></div>
+    <div class="tos">${line2}</div>
     <div class="pts">${g.state === "pre" ? "" : t.score ?? ""}</div>
   </div>`;
 }
@@ -260,7 +260,8 @@ function render() {
     const svg = $(".field", content);
     if (svg) {
       const r = svg.getBoundingClientRect();
-      const fit = Math.round(Math.max(150, Math.min(380, (r.height / Math.max(1, r.width)) * 1200)));
+      // up to a bit taller than a real field (120 x 53 yards)
+      const fit = Math.round(Math.max(150, Math.min(620, (r.height / Math.max(1, r.width)) * 1200)));
       if (Math.abs(fit - (Number(el.dataset.fh) || 170)) > 8) { el.dataset.fh = fit; paint(fit); }
     }
     const s = g ? situation(g) : null;

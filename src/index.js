@@ -3,7 +3,7 @@
 // Responses are trimmed to what the screen needs (an ESPN summary is ~400 KB,
 // a trimmed game is ~20 KB) and cached at the edge for a few seconds.
 
-const VERSION = "0.3.0";
+const VERSION = "0.3.1";
 const SITE = "https://site.api.espn.com/apis/site/v2/sports/football/college-football";
 
 const json = (data, status = 200, maxAge = 0) =>
