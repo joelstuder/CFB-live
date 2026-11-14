@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CFB Live</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+         background: #0b1410; color: #f3f3f3; font: 600 20px/1.4 system-ui, sans-serif; }
+  .card { text-align: center; }
+  .u { color: #f47423; } .g { color: #2bb673; }
+  small { display: block; margin-top: 1rem; color: #8a9a92; font-weight: 400; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div style="font-size:48px">🏈 <span class="u">CFB</span> <span class="g">Live</span></div>
+  <div id="s">Checking the API relay…</div>
+  <small id="v"></small>
+</div>
+<script>
+  fetch('/api/version').then(r => r.json()).then(j => v.textContent = 'build ' + j.version);
+  fetch('/api/scoreboard').then(r => r.json()).then(j => {
+    const live = j.events.filter(e => e.status.type.state === 'in').length;
+    s.textContent = `Relay OK: ${j.events.length} games on the board, ${live} live.`;
+  }).catch(e => s.textContent = 'Relay error: ' + e);
+</script>
+</body>
+</html>
