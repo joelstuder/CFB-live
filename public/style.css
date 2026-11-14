@@ -32,71 +32,73 @@ header button { background: var(--card-2); border: 1px solid var(--line); border
 .game.post { opacity: .8; }
 .game.rz { border-color: var(--rz); animation: rzPulse 1.6s ease-in-out infinite; }
 @keyframes rzPulse { 50% { box-shadow: inset 0 0 0 3px rgba(255, 59, 59, .55), 0 0 22px rgba(255, 59, 59, .45); } }
-.content { height: 100%; display: flex; flex-direction: column; gap: 2.2cqh; padding: 3cqh 2.6cqw;
-  font-size: min(2.6cqw, 4.6cqh); }
+.content { height: 100%; display: flex; flex-direction: column; gap: 2.4cqh; padding: 2.6cqh 2.4cqw 2cqh;
+  font-size: min(2.2cqw, 3.9cqh); }
 
-.top { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr); align-items: center; gap: .9em; }
-.side { display: flex; align-items: center; gap: .6em; min-width: 0; }
-.side.home { flex-direction: row-reverse; text-align: right; }
-.side .logo { width: 2.9em; height: 2.9em; object-fit: contain; flex: none; }
-.tinfo { min-width: 0; flex: 1; }
-.tname { font-size: 1.3em; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tname .rk { font-size: .7em; color: var(--muted); font-weight: 600; margin-right: .25em; }
-.home .tname .rk { margin: 0 0 0 .25em; }
-.lw { position: relative; flex: none; display: flex; }
-.lw .ball { position: absolute; right: -.45em; bottom: -.3em; font-size: 1.25em; filter: drop-shadow(0 1px 2px rgba(0,0,0,.8)); }
-.home .lw .ball { right: auto; left: -.45em; }
-.tsub { font-size: .9em; color: var(--muted); margin-top: .15em; white-space: nowrap; }
-.tos { letter-spacing: .12em; margin-left: .4em; }
-.tos i { display: inline-block; width: .55em; height: .55em; border-radius: 50%; border: 1.5px solid var(--muted); margin-right: .15em; vertical-align: .05em; }
+/* score line: the two teams and the clock */
+.scoreline { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; gap: 1.2em; }
+.team { display: flex; align-items: center; gap: .6em; padding: .35em .6em; border-radius: .5em; min-width: 0;
+  border: .14em solid transparent; transition: background .4s; }
+.team.home { flex-direction: row-reverse; }
+.team .logo { width: 3.6em; height: 3.6em; object-fit: contain; flex: none; }
+.team .tid { min-width: 0; flex: 1; }
+.team.home .tid { text-align: right; }
+.team .abbr { font-size: 1.7em; font-weight: 900; letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.team .rk { font-size: 1em; font-weight: 800; color: var(--muted); }
+.team .fb { font-size: 1.35em; line-height: .8; }
+.team .pts { font-size: 6.2em; font-weight: 900; line-height: .95; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.team.trail .pts { color: #8c98a7; }
+.tos { margin-top: .35em; display: flex; align-items: center; gap: .3em; min-height: 1.2em; }
+.team.home .tos { justify-content: flex-end; }
+.tos i { flex: none; width: .7em; height: .7em; border-radius: 50%; border: 2px solid #4a5868; }
 .tos i.on { background: var(--gold); border-color: var(--gold); }
-.score { font-size: 3em; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; min-width: 1.25em; text-align: center; }
-.score.trail { color: #9aa6b4; }
-.mid { text-align: center; min-width: 5.5em; }
-.situ { display: flex; justify-content: center; align-items: center; gap: .5em; min-height: 1.7em; margin-top: -.6cqh; }
-.situ .cd { color: var(--muted); font-size: 1.05em; }
-.per { font-size: 1em; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+/* the team with the ball: filled with its colour */
+.team.ball { background: var(--tc); color: var(--ti); border-color: var(--ta); }
+.team.ball .rk, .team.ball.trail .pts { color: inherit; opacity: .85; }
+.team.ball .tos i { border-color: var(--ti); opacity: .9; } .team.ball .tos i.on { background: var(--ti); border-color: var(--ti); }
+.team.ball .logo { background: rgba(255,255,255,.95); border-radius: 50%; padding: .3em; }
+.mid { text-align: center; align-self: center; min-width: 5em; }
+.per { font-size: 1.15em; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
 .per.live { color: var(--live); }
 .per.live::before { content: ""; display: inline-block; width: .5em; height: .5em; border-radius: 50%; background: var(--live);
-  margin-right: .4em; vertical-align: .08em; animation: blink 1.4s infinite; }
+  margin-right: .4em; vertical-align: .1em; animation: blink 1.4s infinite; }
 @keyframes blink { 50% { opacity: .2; } }
-.clk { font-size: 2.1em; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.15; white-space: nowrap; }
-.dd { display: inline-block; background: var(--gold); color: #241b00; font-weight: 800; border-radius: .4em;
-  padding: .12em .6em; font-size: 1.3em; white-space: nowrap; }
-.rzpill { display: inline-block; background: var(--rz); color: #fff; font-weight: 800; border-radius: .4em;
-  padding: .15em .5em; font-size: 1.1em; letter-spacing: .05em; animation: blink 1.2s infinite; }
+.clk { font-size: 2.6em; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
+.cd { color: var(--muted); font-size: 1em; }
 
 .field { width: 100%; flex: 1; min-height: 0; display: block; }
-.game.pre .field, .game.post .field { opacity: .45; }
+.game.pre .field, .game.post .field { opacity: .4; }
 
-.bottom { display: grid; grid-template-columns: minmax(0, 1fr) 13em; gap: 1.2em; align-items: start; }
-.lbl { font-size: .8em; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-.lp .txt { font-size: 1.05em; line-height: 1.3; margin-top: .15em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.lp .drv { font-size: .85em; color: var(--muted); margin-top: .2em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.wpbar { display: flex; height: .8em; border-radius: .4em; overflow: hidden; margin-top: .35em; background: var(--line); }
+/* where the ball is, then down and distance */
+.situ { display: flex; justify-content: center; align-items: stretch; gap: .8em; min-height: 2.6em; }
+.pos { display: flex; align-items: baseline; gap: .6em; padding: .25em .8em; border-radius: .45em; background: var(--card-2); white-space: nowrap; min-width: 0; overflow: hidden; }
+.pos { align-items: center; padding: .1em .9em; }
+.pos b { font-size: 1.75em; font-weight: 900; letter-spacing: .03em; }
+.pos span { font-size: 1.05em; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+.pos.opp { background: #3a3110; } .pos.opp b { color: var(--gold); } .pos.opp span { color: #d9c37a; }
+.pos.rz { background: var(--rz); animation: rzBlink 1.2s ease-in-out infinite; } .pos.rz b, .pos.rz span { color: #fff; }
+@keyframes rzBlink { 50% { background: #a31515; } }
+.down { display: flex; align-items: center; padding: .1em .7em; border-radius: .45em; background: var(--gold); color: #241b00;
+  font-size: 1.75em; font-weight: 900; white-space: nowrap; }
+
+.wp { display: flex; align-items: center; gap: .6em; font-size: .85em; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.wpbar { flex: 1; display: flex; height: .55em; border-radius: .3em; overflow: hidden; background: var(--line); }
 .wpbar div { transition: width .8s; }
-.wpnum { display: flex; justify-content: space-between; font-size: .85em; color: var(--muted); margin-top: .2em; font-variant-numeric: tabular-nums; }
-.wpnum b { color: var(--text); }
 
-/* very wide cards (e.g. two games stacked on a landscape screen): info left, field right */
+/* very wide cards: scores left, field right */
 @container (min-aspect-ratio: 2.3) {
-  .content { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr;
-    column-gap: 2.2cqw; font-size: min(1.4cqw, 5.2cqh); }
-  .top, .situ, .bottom { grid-column: 1; }
+  .content { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: 1fr auto auto;
+    column-gap: 2.2cqw; font-size: min(1.25cqw, 4.6cqh); }
+  .scoreline, .situ, .wp { grid-column: 1; }
   .field { grid-column: 2; grid-row: 1 / span 3; align-self: center; height: auto; }
-  .bottom { align-self: end; grid-template-columns: minmax(0, 1fr) 11em; }
 }
-/* small cards: drop the lower row */
-@container (max-height: 260px) {
-  .bottom { display: none; }
-}
+/* small cards: drop win probability */
+@container (max-height: 260px) { .wp { display: none; } }
+/* tall/narrow cards (portrait phone/iPad with several games) */
 @container (max-aspect-ratio: 1.2) {
-  .content { font-size: min(3.3cqw, 4.2cqh); }
-  .mid { min-width: 4.5em; }
-  .score { font-size: 2.8em; }
-  .side .logo { width: 2.6em; height: 2.6em; }
-  .bottom { grid-template-columns: 1fr; }
-  .wp { display: none; }
+  .content { font-size: min(3cqw, 3.8cqh); }
+  .team .pts { font-size: 4.6em; }
+  .team .logo { width: 2.8em; height: 2.8em; }
 }
 
 /* ---------- small on-card alert ---------- */

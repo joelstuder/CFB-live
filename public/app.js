@@ -124,103 +124,103 @@ const realDrive = (g) => !!(g.drive && g.drive.desc && !/^0 plays/.test(g.drive.
 
 /* ---------- field graphic ---------- */
 const X = (yl) => 100 + (100 - yl) * 10; // away end zone on the left, home end zone on the right
-function fieldSVG(g, s, fh = 260) {
-  const cy = fh / 2, top = Math.round(fh * 0.24), bot = Math.round(fh * 0.83);
+function fieldSVG(g, s, fh = 170) {
   const a = away(g), h = home(g);
   const pa = palette(a), ph = palette(h);
+  const cy = fh / 2;
   let out = `<svg class="field" viewBox="0 0 1200 ${fh}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">`;
   for (let i = 0; i < 10; i++) out += `<rect x="${100 + i * 100}" y="0" width="100" height="${fh}" fill="${i % 2 ? "#2b7335" : "#2f7d3a"}"/>`;
   out += `<rect x="0" y="0" width="100" height="${fh}" fill="${pa.main}"/><rect x="1100" y="0" width="100" height="${fh}" fill="${ph.main}"/>`;
-  out += `<text x="50" y="${cy}" fill="${pa.ink}" font-size="40" font-weight="900" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 50 ${cy})" letter-spacing="4">${esc(a.abbr)}</text>`;
-  out += `<text x="1150" y="${cy}" fill="${ph.ink}" font-size="40" font-weight="900" text-anchor="middle" dominant-baseline="central" transform="rotate(90 1150 ${cy})" letter-spacing="4">${esc(h.abbr)}</text>`;
+  out += `<text x="50" y="${cy}" fill="${pa.ink}" font-size="38" font-weight="900" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 50 ${cy})" letter-spacing="3">${esc(a.abbr)}</text>`;
+  out += `<text x="1150" y="${cy}" fill="${ph.ink}" font-size="38" font-weight="900" text-anchor="middle" dominant-baseline="central" transform="rotate(90 1150 ${cy})" letter-spacing="3">${esc(h.abbr)}</text>`;
   if (s && s.redZone && s.poss) {
     const x0 = s.poss === a.id ? 900 : 100;
-    out += `<rect x="${x0}" y="0" width="200" height="${fh}" fill="#ff3b3b" opacity=".3"/>`;
-    out += `<line x1="${s.poss === a.id ? 900 : 300}" y1="0" x2="${s.poss === a.id ? 900 : 300}" y2="${fh}" stroke="#ff3b3b" stroke-width="4" stroke-dasharray="14 10"/>`;
+    out += `<rect x="${x0}" y="0" width="200" height="${fh}" fill="#ff3b3b" opacity=".35"/>`;
   }
   for (let k = 1; k < 20; k++) {
     const x = 100 + k * 50, ten = k % 2 === 0;
-    out += `<line x1="${x}" y1="0" x2="${x}" y2="${fh}" stroke="#fff" stroke-opacity="${ten ? 0.55 : 0.25}" stroke-width="${ten ? 3 : 2}"/>`;
+    out += `<line x1="${x}" y1="0" x2="${x}" y2="${fh}" stroke="#fff" stroke-opacity="${ten ? 0.5 : 0.22}" stroke-width="${ten ? 3 : 2}"/>`;
   }
   out += `<line x1="100" y1="0" x2="100" y2="${fh}" stroke="#fff" stroke-width="5"/><line x1="1100" y1="0" x2="1100" y2="${fh}" stroke="#fff" stroke-width="5"/>`;
   for (let y = 10; y <= 90; y += 10) {
     const n = y <= 50 ? y : 100 - y, x = 100 + y * 10;
-    out += `<text x="${x}" y="${fh - 22}" fill="#fff" fill-opacity=".6" font-size="28" font-weight="700" text-anchor="middle">${n}</text>`;
+    out += `<text x="${x}" y="${fh - 14}" fill="#fff" fill-opacity=".55" font-size="26" font-weight="700" text-anchor="middle">${n}</text>`;
   }
   if (s && s.poss && s.yl != null) {
-    const pt = teamById(g, s.poss), dir = s.poss === a.id ? 1 : -1, bx = X(s.yl);
+    const pt = teamById(g, s.poss), pp = palette(pt), dir = s.poss === a.id ? 1 : -1, bx = X(s.yl);
     if (realDrive(g) && g.drive.team === s.poss) {
       const x1 = X(g.drive.startYl), lo = Math.min(x1, bx), w = Math.abs(bx - x1);
-      if (w > 2) out += `<rect x="${lo}" y="${cy - 14}" width="${w}" height="28" rx="10" fill="${onDark(pt)}" opacity=".5"/>`;
+      if (w > 2) out += `<rect x="${lo}" y="${cy - 13}" width="${w}" height="26" rx="10" fill="${onDark(pt)}" opacity=".55"/>`;
     }
-    out += `<line x1="${bx}" y1="${top}" x2="${bx}" y2="${bot}" stroke="#4da3ff" stroke-width="6"/>`;
+    out += `<line x1="${bx}" y1="0" x2="${bx}" y2="${fh}" stroke="#4da3ff" stroke-width="6"/>`;
     if (s.down > 0 && !s.goal) {
       const fx = Math.max(100, Math.min(1100, bx + dir * s.dist * 10));
-      out += `<line x1="${fx}" y1="${top}" x2="${fx}" y2="${bot}" stroke="#ffcc33" stroke-width="6"/>`;
+      out += `<line x1="${fx}" y1="0" x2="${fx}" y2="${fh}" stroke="#ffcc33" stroke-width="7"/>`;
     }
-    out += `<polygon points="${bx + dir * 34},${cy - 12} ${bx + dir * 52},${cy} ${bx + dir * 34},${cy + 12}" fill="#fff"/>`;
-    out += `<ellipse cx="${bx}" cy="${cy}" rx="24" ry="14" fill="#8a4b1f" stroke="#fff" stroke-width="2.5"/>`;
-    out += `<line x1="${bx - 9}" y1="${cy}" x2="${bx + 9}" y2="${cy}" stroke="#fff" stroke-width="2.5"/>`;
-    if (pt?.logoDark) out += `<image href="${esc(pt.logoDark)}" x="${bx - 30}" y="${cy - 66}" width="60" height="44"/>`;
+    // the ball: a big disc in the colours of the team that has it, pointing the way they're going
+    const r = Math.min(52, cy - 8);
+    out += `<polygon points="${bx + dir * (r + 6)},${cy - 20} ${bx + dir * (r + 34)},${cy} ${bx + dir * (r + 6)},${cy + 20}" fill="#fff"/>`;
+    out += `<circle cx="${bx}" cy="${cy}" r="${r}" fill="#fff" stroke="${pp.main}" stroke-width="9"/>`;
+    out += `<circle cx="${bx}" cy="${cy}" r="${r + 5}" fill="none" stroke="${pp.accent === "#ffffff" ? "#111" : pp.accent}" stroke-width="2.5"/>`;
+    const logo = pt.logo || pt.logoDark;
+    if (logo) out += `<image href="${esc(logo)}" x="${bx - r * 0.68}" y="${cy - r * 0.68}" width="${r * 1.36}" height="${r * 1.36}"/>`;
   }
   return out + "</svg>";
 }
 
 /* ---------- cards ---------- */
-function sideHTML(g, t, s, isHome) {
+// one team: logo, abbreviation, score; filled with the team colour when it has the ball
+function teamHTML(g, t, s, isHome) {
   const live = g.state === "in";
-  const o = other(g, t.id);
-  const lead = g.state !== "pre" && t.score != null && o.score != null && t.score !== o.score ? (t.score > o.score ? "lead" : "trail") : "";
-  const ball = live && s && s.poss === t.id ? `<span class="ball">🏈</span>` : "";  // sits on the logo
-  const label = (t.name || "").length <= 9 ? t.name : t.abbr;
-  const name = esc(label);
-  const sub = [t.rank ? `#${t.rank}` : "", t.record].filter(Boolean).join(" · ");
-  let tos = "";
+  const has = live && s && s.poss === t.id;
+  const p = palette(t);
   const left = isHome ? g.sit?.homeTO : g.sit?.awayTO;
-  if (live && left != null) tos = `<span class="tos">${[0, 1, 2].map((i) => `<i class="${i < left ? "on" : ""}"></i>`).join("")}</span>`;
-  const side = `<div class="side ${isHome ? "home" : "away"} ${lead}">
-    <div class="lw"><img class="logo" src="${esc(t.logoDark || t.logo)}" alt="">${ball}</div>
-    <div class="tinfo"><div class="tname">${name}</div><div class="tsub">${esc(sub)}${tos}</div></div>
+  const dots = live && left != null ? [0, 1, 2].map((i) => `<i class="${i < left ? "on" : ""}"></i>`).join("") : "";
+  const line2 = `${t.rank ? `<span class="rk">#${t.rank}</span>` : ""}${has ? `<span class="fb">🏈</span>` : ""}${dots}`;
+  const o = other(g, t.id);
+  const trail = g.state !== "pre" && t.score != null && o.score != null && t.score < o.score ? "trail" : "";
+  const style = has ? `style="--tc:${p.main};--ta:${p.accent};--ti:${p.ink}"` : "";
+  return `<div class="team ${isHome ? "home" : "away"} ${has ? "ball" : ""} ${trail}" ${style}>
+    <img class="logo" src="${esc(has ? t.logo || t.logoDark : t.logoDark || t.logo)}" alt="">
+    <div class="tid"><div class="abbr">${esc(t.abbr)}</div><div class="tos">${line2}</div></div>
+    <div class="pts">${g.state === "pre" ? "" : t.score ?? ""}</div>
   </div>`;
-  const score = `<div class="score ${lead}">${g.state === "pre" ? "" : t.score ?? ""}</div>`;
-  return isHome ? score + side : side + score;
 }
 
 function cardHTML(g, fh) {
   const s = situation(g), a = away(g), h = home(g), p = periodInfo(g);
   let mid = `<div class="per ${p.live ? "live" : ""}">${esc(p.per)}</div>`;
   if (p.clk) mid += `<div class="clk">${esc(p.clk)}</div>`;
-  let situ = "";
-  if (g.state === "pre") situ = `<span class="cd">${esc(isToday(g.date) ? countdown(g.date) : new Date(g.date).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short", timeZone: TZ }))}</span>`;
-  if (s && s.dd) situ = `<span class="dd">${esc(s.dd)}</span>${s.redZone ? `<span class="rzpill">RED ZONE</span>` : ""}`;
+  if (g.state === "pre") mid += `<div class="cd">${esc(isToday(g.date) ? countdown(g.date) : new Date(g.date).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: TZ }))}</div>`;
 
-  let bottom = "";
-  if (g.state === "in") {
-    const lp = [...g.plays].reverse().find((x) => x.text);
-    const drive = realDrive(g) ? `${esc(teamById(g, g.drive.team)?.abbr || "")} drive: ${esc(g.drive.desc)}` : "";
-    let wp = "";
-    if (g.wpHome != null) {
-      const ph = Math.round(g.wpHome * 100), pa = 100 - ph;
-      wp = `<div class="wp"><div class="lbl">Win probability</div>
-        <div class="wpbar"><div style="width:${pa}%;background:${onDark(a)}"></div><div style="width:${ph}%;background:${onDark(h)}"></div></div>
-        <div class="wpnum"><span>${esc(a.abbr)} <b>${pa}%</b></span><span><b>${ph}%</b> ${esc(h.abbr)}</span></div></div>`;
-    }
-    bottom = `<div class="bottom"><div class="lp"><div class="lbl">Last play</div><div class="txt">${esc(cleanPlay(lp?.text) || "—")}</div><div class="drv">${drive}</div></div>${wp}</div>`;
+  // where the ball is, in words: how far from scoring, coloured by zone
+  let situ = "";
+  if (s && s.yl != null && s.poss) {
+    const zone = s.redZone ? "rz" : s.ytez < 50 ? "opp" : "own";
+    // OWN 25 = own half, OPP 32 = 32 yards from scoring; colour says how close (grey, gold, red zone)
+    const where = s.ytez === 50 ? "50" : s.ytez < 50 ? `OPP ${s.ytez}` : `OWN ${100 - s.ytez}`;
+    situ = `<div class="pos ${zone}"><b>${where}</b></div>`;
+    if (s.down > 0) situ += `<div class="down">${ord(s.down)} & ${s.goal ? "Goal" : s.dist}</div>`;
+  } else if (g.state === "in") {
+    situ = `<div class="pos own"><span>${esc(cleanPlay([...g.plays].reverse().find((x) => x.text)?.text || "").slice(0, 60))}</span></div>`;
   } else if (g.state === "pre") {
-    bottom = `<div class="bottom"><div class="lp"><div class="lbl">Venue</div><div class="txt">${esc(g.venue || "—")}</div></div></div>`;
-  } else {
-    const last = g.scoring.at(-1);
-    bottom = `<div class="bottom"><div class="lp"><div class="lbl">Last score</div><div class="txt">${esc(last ? `${teamById(g, last.team)?.abbr || ""}: ${last.text}` : "—")}</div>
-      <div class="drv">${esc(a.abbr)} ${a.lines.join(" · ")} &nbsp;|&nbsp; ${esc(h.abbr)} ${h.lines.join(" · ")}</div></div></div>`;
+    situ = `<div class="pos own"><span>${esc(g.venue || "")}</span></div>`;
   }
-  return `<div class="top">${sideHTML(g, a, s, false)}<div class="mid">${mid}</div>${sideHTML(g, h, s, true)}</div><div class="situ">${situ}</div>${fieldSVG(g, s, fh)}${bottom}`;
+
+  let wp = "";
+  if (g.state === "in" && g.wpHome != null) {
+    const ph = Math.round(g.wpHome * 100), pa = 100 - ph;
+    wp = `<div class="wp"><span>${esc(a.abbr)} ${pa}%</span><div class="wpbar"><div style="width:${pa}%;background:${onDark(a)}"></div><div style="width:${ph}%;background:${onDark(h)}"></div></div><span>${ph}% ${esc(h.abbr)}</span></div>`;
+  }
+  return `<div class="scoreline">${teamHTML(g, a, s, false)}<div class="mid">${mid}</div>${teamHTML(g, h, s, true)}</div>
+    ${fieldSVG(g, s, fh)}<div class="situ">${situ}</div>${wp}`;
 }
 
 function placeholderHTML(id) {
   const b = board.find((x) => x.id === id);
-  return `<div class="top"><div class="side away"><div class="tinfo"><div class="tname">${esc(b ? b.away.name : "Loading…")}</div></div></div>
+  return `<div class="scoreline"><div class="team away"><div class="tid"><div class="abbr">${esc(b ? b.away.abbr : "…")}</div></div></div>
     <div class="mid"><div class="per">Loading</div></div>
-    <div class="side home"><div class="tinfo"><div class="tname">${esc(b ? b.home.name : "")}</div></div></div></div>`;
+    <div class="team home"><div class="tid"><div class="abbr">${esc(b ? b.home.abbr : "")}</div></div></div></div>`;
 }
 
 const STATE_ORDER = { in: 0, pre: 1, post: 2 };
@@ -250,10 +250,19 @@ function render() {
     }
     if (wrap.children[i] !== el) wrap.insertBefore(el, wrap.children[i] || null);
     const g = gs[id]?.data;
-    const wide = el.clientWidth / Math.max(1, el.clientHeight) >= 2.3;
-    const html = g ? cardHTML(g, wide ? 420 : 260) : placeholderHTML(id);
     const content = $(".content", el);
-    if (content.dataset.h !== html) { content.innerHTML = html; content.dataset.h = html; }
+    const paint = (fh) => {
+      const html = g ? cardHTML(g, fh) : placeholderHTML(id);
+      if (content.dataset.h !== html) { content.innerHTML = html; content.dataset.h = html; }
+    };
+    paint(Number(el.dataset.fh) || 170);
+    // let the field fill whatever height the card has left (its box is sized by the layout, not the drawing)
+    const svg = $(".field", content);
+    if (svg) {
+      const r = svg.getBoundingClientRect();
+      const fit = Math.round(Math.max(150, Math.min(380, (r.height / Math.max(1, r.width)) * 1200)));
+      if (Math.abs(fit - (Number(el.dataset.fh) || 170)) > 8) { el.dataset.fh = fit; paint(fit); }
+    }
     const s = g ? situation(g) : null;
     el.classList.toggle("rz", !!(s && s.redZone));
     for (const st of ["in", "pre", "post"]) el.classList.toggle(st, g?.state === st);
@@ -634,6 +643,22 @@ function testAlert(kind) {
   if (kind === "rz") flashCard(id, { kind: "rz", team: A, text: "Red zone", sub: A.abbr });
 }
 document.querySelectorAll("[data-test]").forEach((b) => b.addEventListener("click", () => { closeSheet(); testAlert(b.dataset.test); }));
+
+/* ---------- full screen ---------- */
+const fsEl = document.documentElement;
+const canFS = !!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen);
+const isFS = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+function toggleFS() {
+  if (isFS()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  else (fsEl.requestFullscreen || fsEl.webkitRequestFullscreen).call(fsEl);
+}
+if (!canFS) $("#fsBtn").remove();
+else {
+  $("#fsBtn").addEventListener("click", toggleFS);
+  const paintFS = () => { $("#fsBtn").textContent = isFS() ? "Exit full screen" : "⛶ Full screen"; setTimeout(render, 150); };
+  document.addEventListener("fullscreenchange", paintFS); document.addEventListener("webkitfullscreenchange", paintFS);
+  addEventListener("keydown", (e) => { if (e.key === "f" && !e.target.closest("input")) toggleFS(); });
+}
 
 /* ---------- keep the screen awake ---------- */
 async function keepAwake() {
