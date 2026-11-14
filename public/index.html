@@ -1,29 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CFB Live">
+<meta name="theme-color" content="#0b0f14">
 <title>CFB Live</title>
-<style>
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center;
-         background: #0b1410; color: #f3f3f3; font: 600 20px/1.4 system-ui, sans-serif; }
-  .card { text-align: center; }
-  .u { color: #f47423; } .g { color: #2bb673; }
-  small { display: block; margin-top: 1rem; color: #8a9a92; font-weight: 400; }
-</style>
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<div class="card">
-  <div style="font-size:48px">🏈 <span class="u">CFB</span> <span class="g">Live</span></div>
-  <div id="s">Checking the API relay…</div>
-  <small id="v"></small>
+<div id="start">
+  <h2>🏈 CFB Live</h2>
+  <p>Pick the college football games you want to follow. Touchdowns, field goals, turnovers and finals take over the screen in team colours with a horn; first downs, changes of possession and the red zone show on each game.</p>
+  <button id="go">▶ Start</button>
+  <p class="small">Starting turns on sound and keeps the screen awake.</p>
 </div>
-<script>
-  fetch('/api/version').then(r => r.json()).then(j => v.textContent = 'build ' + j.version);
-  fetch('/api/scoreboard').then(r => r.json()).then(j => {
-    const live = j.events.filter(e => e.status.type.state === 'in').length;
-    s.textContent = `Relay OK: ${j.events.length} games on the board, ${live} live.`;
-  }).catch(e => s.textContent = 'Relay error: ' + e);
-</script>
+
+<header>
+  <h1>🏈 CFB Live</h1>
+  <div id="status"><span class="dot"></span><span id="statusText">Loading…</span></div>
+  <div class="spacer"></div>
+  <div id="now"></div>
+  <button id="soundBtn">🔊</button>
+  <button id="pickBtn">Games</button>
+</header>
+
+<main id="games"></main>
+
+<div id="sheet" hidden>
+  <div class="panel">
+    <div class="phead">
+      <h2>Pick your games</h2>
+      <input id="search" type="search" placeholder="Search a team" autocomplete="off">
+      <button id="doneBtn" class="primary">Done</button>
+    </div>
+    <div id="list"></div>
+    <div class="opts">
+      <h3>Alerts</h3>
+      <label><input type="checkbox" id="optSound"> Sound (horn on big alerts)</label>
+      <label><input type="checkbox" id="optFirst"> First downs</label>
+      <label><input type="checkbox" id="optPoss"> Changes of possession</label>
+      <h3>Test an alert</h3>
+      <div class="tests">
+        <button data-test="td">Touchdown</button>
+        <button data-test="fg">Field goal</button>
+        <button data-test="int">Interception</button>
+        <button data-test="downs">Turnover on downs</button>
+        <button data-test="final">Final</button>
+        <button data-test="first">First down</button>
+        <button data-test="poss">Possession</button>
+        <button data-test="rz">Red zone</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="alert"></div>
+<script src="/app.js"></script>
 </body>
 </html>
