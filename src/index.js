@@ -3,7 +3,7 @@
 // Responses are trimmed to what the screen needs (an ESPN summary is ~400 KB,
 // a trimmed game is ~20 KB) and cached at the edge for a few seconds.
 
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 const SITE = "https://site.api.espn.com/apis/site/v2/sports/football/college-football";
 const CORE = "https://sports.core.api.espn.com/v2/sports/football/leagues/college-football";
 
@@ -139,9 +139,11 @@ export default {
         return await cached(request, ctx, 4, async () => {
           const [sum, sit] = await Promise.all([
             upstream(`${SITE}/summary?event=${id}`),
-            upstream(`${CORE}/events/${id}/competitions/${id}/situation`).catch(() => null),
+            upstream(`${CORE}/events/${id}/competitions/${id}/situation`).catch((e) => ({ error: String(e.message || e) })),
           ]);
-          return trimGame(sum, sit);
+          const out = trimGame(sum, sit && !sit.error ? sit : null);
+          if (sit && sit.error) out.sitError = sit.error;
+          return out;
         });
       }
       return json({ error: "not found" }, 404);
